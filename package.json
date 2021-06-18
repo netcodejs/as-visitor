@@ -1,11 +1,11 @@
 {
-  "name": "visitor-as",
+  "name": "@netcodejs/as-visitor",
   "version": "0.6.0",
   "description": "A generic visitor framework for AssemblyScript",
   "main": "dist",
   "types": "dist",
   "repository": "https://github.com/willemneal/visitor-as",
-  "author": "Willem Wyndham",
+  "author": "Little Moi",
   "license": "MIT",
   "private": false,
   "scripts": {

@@ -1,17 +1,14 @@
 /// <reference types="assemblyscript/std/portable" />
 import { PathTransformVisitor } from "./transformer";
-import { ClassDeclaration, FieldDeclaration, MethodDeclaration, Parser, VariableDeclaration, FunctionDeclaration, Source, DecoratorNode, DeclarationStatement } from "../as";
-export declare function registerDecorator(decorator: DecoratorVisitor): typeof TopLevelDecorator;
-interface DecoratorVisitor extends PathTransformVisitor {
-    decoratorMatcher: (node: DecoratorNode) => boolean;
-    sourceFilter: (s: Source) => bool;
-}
+import { ClassDeclaration, FieldDeclaration, MethodDeclaration, Parser, VariableDeclaration, FunctionDeclaration, Source, DecoratorNode, DeclarationStatement, Program, Module } from "../as";
+export declare function registerDecorator(decorator: Decorator): typeof TopLevelDecorator;
 export declare class TopLevelDecorator extends PathTransformVisitor {
-    private static _visitor;
-    static registerVisitor(visitor: DecoratorVisitor): void;
-    private get visitor();
+    private static _visitors;
+    static registerVisitor(...visitors: Decorator[]): void;
     visitDecoratorNode(node: DecoratorNode): void;
     afterParse(_: Parser): void;
+    afterInitialize(_: Program): void;
+    afterCompile(_: Module): void;
 }
 export declare abstract class Decorator extends PathTransformVisitor {
     /**
@@ -33,4 +30,3 @@ export declare abstract class FunctionDecorator extends Decorator {
 export declare abstract class VariableDecorator extends Decorator {
     abstract visitVariableDeclaration(node: VariableDeclaration): void;
 }
-export {};
