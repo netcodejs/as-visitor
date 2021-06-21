@@ -82,7 +82,32 @@ import {
 import { AbstractVisitor } from "./visitor";
 
 export class BaseVisitor extends AbstractVisitor<Node> {
-  depth = 0;
+  private _depth = 0;
+  get depth() {
+    return this._depth;
+  }
+
+  set depth(value) {
+    const increment = value - this._depth;
+    if (Math.abs(increment) !== 1) throw "Invalid operator!";
+    if (increment == 1) {
+      const lastRecord = this.variableTypeRecordArr[this._depth] ?? null;
+      this.variableTypeRecordArr[value] = Object.create(lastRecord);
+    } else {
+      this.variableTypeRecordArr[this._depth] = null;
+    }
+    this._depth = value;
+  }
+  variableTypeRecordArr: (Record<string, TypeNode | null> | null)[] = [];
+
+  get currentVariableTypeRecord() {
+    return this.variableTypeRecordArr[this._depth];
+  }
+
+  classNode: ClassDeclaration[] = []
+  get thisTypeNode() {
+    return this.classNode[this.classNode.length - 1]
+  }
 
   protected _visit(node: Node): void {
     switch (node.kind) {
@@ -543,6 +568,7 @@ export class BaseVisitor extends AbstractVisitor<Node> {
   }
 
   visitClassDeclaration(node: ClassDeclaration, isDefault = false): void {
+    this.classNode.push(node);
     this.visit(node.name);
     this.depth++;
     this.visit(node.decorators);
@@ -556,6 +582,7 @@ export class BaseVisitor extends AbstractVisitor<Node> {
     this.visit(node.implementsTypes);
     this.visit(node.members);
     this.depth--;
+    this.classNode.pop();
   }
 
   visitDoStatement(node: DoStatement): void {
@@ -607,10 +634,12 @@ export class BaseVisitor extends AbstractVisitor<Node> {
   }
 
   visitForStatement(node: ForStatement): void {
+    this.depth++;
     this.visit(node.initializer);
     this.visit(node.condition);
     this.visit(node.incrementor);
     this.visit(node.statement);
+    this.depth--;
   }
 
   visitFunctionDeclaration(
@@ -620,8 +649,8 @@ export class BaseVisitor extends AbstractVisitor<Node> {
     this.visit(node.name);
     this.visit(node.decorators);
     this.visit(node.typeParameters);
-    this.visit(node.signature);
     this.depth++;
+    this.visit(node.signature);
     this.visit(node.body);
     this.depth--;
   }
@@ -664,9 +693,9 @@ export class BaseVisitor extends AbstractVisitor<Node> {
   visitMethodDeclaration(node: MethodDeclaration): void {
     this.visit(node.name);
     this.visit(node.typeParameters);
-    this.visit(node.signature);
     this.visit(node.decorators);
     this.depth++;
+    this.visit(node.signature);
     this.visit(node.body);
     this.depth--;
   }
@@ -718,6 +747,7 @@ export class BaseVisitor extends AbstractVisitor<Node> {
     this.visit(node.name);
     this.visit(node.type);
     this.visit(node.initializer);
+    this.currentVariableTypeRecord![node.name.text] = node.type;
   }
 
   visitVariableStatement(node: VariableStatement): void {
@@ -746,5 +776,6 @@ export class BaseVisitor extends AbstractVisitor<Node> {
     this.visit(node.implicitFieldDeclaration);
     this.visit(node.initializer);
     this.visit(node.type);
+    this.currentVariableTypeRecord![node.name.text] = node.type
   }
 }

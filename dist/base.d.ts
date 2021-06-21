@@ -2,7 +2,13 @@
 import { Node, Source, NamedTypeNode, FunctionTypeNode, TypeName, TypeParameterNode, IdentifierExpression, AssertionExpression, BinaryExpression, CallExpression, ClassExpression, CommaExpression, ElementAccessExpression, FunctionExpression, InstanceOfExpression, LiteralExpression, NewExpression, ParenthesizedExpression, PropertyAccessExpression, TernaryExpression, UnaryPostfixExpression, UnaryPrefixExpression, BlockStatement, BreakStatement, ContinueStatement, DoStatement, EmptyStatement, ExportStatement, ExportDefaultStatement, ExportImportStatement, ExpressionStatement, ForStatement, IfStatement, ImportStatement, ReturnStatement, SwitchStatement, ThrowStatement, TryStatement, VariableStatement, WhileStatement, ClassDeclaration, EnumDeclaration, EnumValueDeclaration, FieldDeclaration, FunctionDeclaration, ImportDeclaration, InterfaceDeclaration, MethodDeclaration, NamespaceDeclaration, TypeDeclaration, VariableDeclaration, DecoratorNode, IndexSignatureNode, ParameterNode, ExportMember, SwitchCase, TypeNode, ArrayLiteralExpression, Expression, ObjectLiteralExpression, FloatLiteralExpression, IntegerLiteralExpression, StringLiteralExpression, RegexpLiteralExpression, UnaryExpression, SuperExpression, FalseExpression, TrueExpression, ThisExpression, NullExpression, ConstructorExpression, Statement, VoidStatement, CommentNode, TemplateLiteralExpression } from "../as";
 import { AbstractVisitor } from "./visitor";
 export declare class BaseVisitor extends AbstractVisitor<Node> {
-    depth: number;
+    private _depth;
+    get depth(): number;
+    set depth(value: number);
+    variableTypeRecordArr: (Record<string, TypeNode | null> | null)[];
+    get currentVariableTypeRecord(): Record<string, TypeNode | null> | null;
+    classNode: ClassDeclaration[];
+    get thisTypeNode(): ClassDeclaration;
     protected _visit(node: Node): void;
     visitSource(node: Source): void;
     visitTypeNode(node: TypeNode): void;

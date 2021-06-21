@@ -93,6 +93,10 @@ export function isMethodNamed(name: string): (_: DeclarationStatement) => boolea
   return (stmt: DeclarationStatement) => stmt.kind == NodeKind.METHODDECLARATION && toString(stmt.name) === name;
 }
 
+// export function isSubClassOf(a: ClassDeclaration, b: ClassDeclaration): boolean {
+//   a.extendsType?.name.next
+// }
+
 export class StringBuilder {
   private sb: string[] = [];
 
@@ -102,6 +106,7 @@ export class StringBuilder {
 
   finish(separator = "\n"): string {
     let res = this.sb.join(separator);
+    
     this.sb = [];
     return res;
   }
